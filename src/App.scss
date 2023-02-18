@@ -1,0 +1,5 @@
+@import "style/var";
+
+.App{
+  @extend %debugBG1;
+}

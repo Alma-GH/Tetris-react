@@ -1,0 +1,11 @@
+@import "../../style/var";
+
+
+$h: 100px;
+$w: 100px;
+.parent{
+  height: $h;
+  width: $w;
+
+  @extend %debugBG2;
+}
