@@ -1,0 +1,41 @@
+@import "src/style/var";
+
+
+.Cell{
+    height: $cell-size;
+    width: $cell-size;
+
+    border: groove 2px;
+
+    background-color: $cell-col-grey;
+    border-color: $cell-col-grey;
+
+    &.yellow{
+        background-color: $cell-col-yellow;
+        border-color: $cell-col-yellow;
+    }
+    &.purple{
+        background-color: $cell-col-purple;
+        border-color: $cell-col-purple;
+    }
+    &.green{
+        background-color: $cell-col-green;
+        border-color: $cell-col-green;
+    }
+    &.orange{
+        background-color: $cell-col-orange;
+        border-color: $cell-col-orange;
+    }
+    &.red{
+        background-color: $cell-col-red;
+        border-color: $cell-col-red;
+    }
+    &.cyan{
+        background-color: $cell-col-cyan;
+        border-color: $cell-col-cyan;
+    }
+    &.blue{
+        background-color: $cell-col-blue;
+        border-color: $cell-col-blue;
+    }
+}

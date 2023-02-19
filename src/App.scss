@@ -1,5 +1,6 @@
 @import "style/var";
 
 .App{
-  @extend %debugBG1;
+  @extend %fullScreen;
+  @extend %center;
 }

@@ -1,0 +1,15 @@
+@import "src/style/var";
+
+
+
+.Field{
+
+  height: $cell-size * $field-height;
+  width: $cell-size * $field-width;
+
+  display: grid;
+  grid-template-rows: repeat($field-height, 1fr);
+  grid-template-columns: repeat($field-width, 1fr);
+
+  background-color: black;
+}

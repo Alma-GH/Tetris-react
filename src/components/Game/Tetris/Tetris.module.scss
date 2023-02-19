@@ -1,0 +1,11 @@
+@import "src/style/var";
+
+
+.Tetris{
+    height: 700px;
+    width: 600px;
+
+    @extend %center;
+
+    background-color: red;
+}
