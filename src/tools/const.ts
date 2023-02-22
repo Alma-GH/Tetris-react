@@ -1,7 +1,6 @@
 
 
-
-
+//Game
 export const DEF_EMPTY_FIELD: Readonly<Readonly<number[]>[]> = [
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
@@ -25,3 +24,6 @@ export const DEF_EMPTY_FIELD: Readonly<Readonly<number[]>[]> = [
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
 ]
+
+export const SIZE_H_FIELD = DEF_EMPTY_FIELD.length
+export const SIZE_W_FIELD = DEF_EMPTY_FIELD[0].length

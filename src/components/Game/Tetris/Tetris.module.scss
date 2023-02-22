@@ -2,10 +2,24 @@
 
 
 .Tetris{
+
+    position: relative;
+
     height: 700px;
     width: 600px;
 
     @extend %center;
 
     background-color: red;
+
+    .endGame{
+
+        position: absolute;
+
+        @extend %center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: black;
+    }
 }
+

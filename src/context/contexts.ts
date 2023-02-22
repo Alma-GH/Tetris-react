@@ -7,7 +7,8 @@ export const StateContext = createContext<IStateContext>({
         tetris: {
             score: 0,
             nextFigure: FigureType.I,
-            field: []
+            field: [],
+            inProgress: false
         }
     },
     setState: ()=>{}

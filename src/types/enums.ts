@@ -1,13 +1,13 @@
 
 
 export enum FigureType{
-    O,
-    L,
-    J,
-    Z,
-    S,
-    T,
-    I
+    O = "O",
+    L = "L",
+    J = "J",
+    Z = "Z",
+    S = "S",
+    T = "T",
+    I = "I"
 }
 
 export enum CellColor{
