@@ -1,4 +1,5 @@
 
+//debug
 %debugBG1{
   background-color: rgba(0, 255, 0, 0.26);
 }
@@ -9,6 +10,7 @@
   background-color: rgba(255, 0, 0, 0.26);
 }
 
+//position
 %center{
   display: flex;
   justify-content: center;
@@ -22,6 +24,17 @@
   height: 100vh;
   width: 100vw;
 }
+
+//
+%glassEffect{
+  background-color: #ffffff10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+
+
 
 
 //Game
@@ -42,6 +55,25 @@ $cell-col-red: red;
 //FIELD
 $field-width: 10;
 $field-height: 20;
+
+//PREVIEW
+$preview-width: 6;
+$preview-height: 5;
+
+
+
+
+
+
+$bg-img-url1: "https://img.freepik.com/free-photo/river-surrounded-by-forests-under-a-cloudy-sky-in-thuringia-in-germany_181624-30863.jpg";
+$bg-img-query1: "?w=1060&t=st=1677184194~exp=1677184794~hmac=fa3ee3e6db1fe4a897e55ca4025f292e2447e62d4f722ec5c51cb3844238ca0d";
+
+$bg-img-url2: "https://img.freepik.com/free-photo/landscape-of-tree-silhouettes-under-a-cloudy-sky-during-a-beautiful-pink-sunset_181624-6164.jpg";
+$bg-img-query2: "?w=1380&t=st=1677184615~exp=1677185215~hmac=7999ac1d7be096a4de97279c62e459c7432aacd74ea437de8af2c5055d799e3f";
+
+$bg-img-url3: "https://mobimg.b-cdn.net/v3/fetch/90/905911947c2947e6dda5a8d9aa2af088.jpeg";
+
+$bg-img-url4: "https://i.7fon.org/1000/u217544.jpg";
 
 
 

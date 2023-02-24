@@ -13,3 +13,8 @@ export interface ITetris{
 
     inProgress: boolean
 }
+
+
+export interface IScoreMap {
+    [key: number]: number
+}

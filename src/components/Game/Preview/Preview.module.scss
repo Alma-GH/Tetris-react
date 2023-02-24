@@ -1,0 +1,21 @@
+@import "src/style/var";
+
+
+.Preview{
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  height: $cell-size * $preview-height;
+  width: $cell-size * $preview-width;
+
+  display: grid;
+  grid-template-rows: repeat($preview-height, 1fr);
+  grid-template-columns: repeat($preview-width, 1fr);
+
+  background-color: black;
+
+  @extend %center;
+
+}

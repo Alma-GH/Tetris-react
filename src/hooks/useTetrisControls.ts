@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import TetrisService from "../tools/Services/TetrisService";
 
 
-export const useControls = ()=>{
+export const useTetrisControls = (): void =>{
 
     useEffect(()=>{
 
@@ -19,17 +19,18 @@ export const useControls = ()=>{
                     TetrisService.rightFigure()
                     break;
                 case "ArrowUp":
+                    press = true
                     TetrisService.rotateFigure()
                     break;
                 case "ArrowDown":
+                    press = true
                     TetrisService.fallFigure()
                     break;
                 case "Space":
-                    console.log("SPACE")
+                    press = true
                     TetrisService.dropFigure()
                     break;
             }
-            press = true
         }
         const controlOff = (e: KeyboardEvent)=>{
             press = false

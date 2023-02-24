@@ -1,4 +1,4 @@
-import {Field, ITetris, Point} from "../../types/tetris";
+import {Field, IScoreMap, ITetris, Point} from "../../types/tetris";
 import {FigureType} from "../../types/enums";
 import Figure from "./Figure";
 import {randomEnum} from "../utils";
@@ -10,6 +10,13 @@ class TetrisService {
     curFigure: Figure | null = null
     tick: number = 1000
     timer: number | undefined = undefined
+
+    static readonly scoreMap: IScoreMap = {
+        1: 100,
+        2: 300,
+        3: 700,
+        4: 1500
+    }
 
     private static randomFigureType(): FigureType{
         return randomEnum(FigureType)
@@ -36,7 +43,22 @@ class TetrisService {
 
         return isOk;
     }
-    private startTick(): boolean{
+    private startTicks(): void {
+        this.stopTicks()
+
+        this.firstTick()
+        this.timer = setInterval(()=>{
+            if(!this.nextTick()){
+                this.clearFullLines()
+                this.firstTick()
+            }
+
+        }, this.tick)
+    }
+    private stopTicks(): void {
+        clearInterval(this.timer)
+    }
+    private firstTick(): boolean{
         if(this.tetris == null)
             return false
 
@@ -59,6 +81,7 @@ class TetrisService {
         return mayFall;
     }
 
+
     //tetris
     setTetris(newTetris: ITetris): void{
         this.tetris = newTetris
@@ -68,7 +91,7 @@ class TetrisService {
     }
 
     clearFullLines(): void{
-        if(this.tetris == null)
+        if(this.tetris == null || !this.tetris.inProgress)
             return
 
         //TODO: optimize (numLines)
@@ -90,42 +113,23 @@ class TetrisService {
         if(this.tetris == null)
             return
 
-        switch(lines) {
-            case 1:
-                this.tetris.score += 100
-                break;
-            case 2:
-                this.tetris.score += 300
-                break;
-            case 3:
-                this.tetris.score += 700
-                break;
-            case 4:
-                this.tetris.score += 1500
-                break;
-            default:
-                break;
-        }
+        if([1,2,3,4].includes(lines))
+            this.tetris.score += TetrisService.scoreMap[lines]
     }
 
     startGame(): void{
         if(this.tetris == null)
             return
 
+        this.stopGame()
+
         this.tetris.inProgress = true
         this.tetris.nextFigure = TetrisService.randomFigureType()
 
-        this.startTick()
-        this.timer = setInterval(()=>{
-            if(!this.nextTick()){
-                this.clearFullLines()
-                this.startTick()
-            }
-
-        }, this.tick)
+        this.startTicks()
     }
     stopGame(): void{
-        clearInterval(this.timer)
+        this.stopTicks()
         if(this.tetris)
             this.tetris.inProgress = false
     }
@@ -197,6 +201,9 @@ class TetrisService {
     }
 
     controlFigure(control: Function): unknown {
+        if(!this.tetris?.inProgress)
+            return null
+
         this.unmountFigure()
         const res = control()
         this.mountFigure()
@@ -209,13 +216,15 @@ class TetrisService {
         })
     }
     dropFigure(): void {
-        //TODO: change
-        this.stopGame()
+        if(!this.tetris?.inProgress)
+            return
+
+        this.stopTicks()
         let mayFall = this.fallFigure()
         while(mayFall)
             mayFall = this.fallFigure()
         this.clearFullLines()
-        this.startGame()
+        this.startTicks()
     }
     leftFigure(): void{
         this.controlFigure(()=>{

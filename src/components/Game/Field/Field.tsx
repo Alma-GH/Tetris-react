@@ -1,21 +1,12 @@
 import React, {FC} from 'react';
 import cls from "./Field.module.scss"
 import Cell from "../Cell/Cell";
-import {CellColor} from "../../../types/enums";
 import {Field as TField} from "../../../types/tetris";
+import {colorMap} from "../../../tools/const";
 
 
 interface FieldProps{
     field: TField
-}
-
-interface ColorMap {
-    [key: number]: CellColor
-}
-
-const colorMap: ColorMap = {
-    1: CellColor.Y,
-    2: CellColor.P
 }
 
 const Field: FC<FieldProps> = ({field}) => {

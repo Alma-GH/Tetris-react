@@ -3,4 +3,8 @@
 .App{
   @extend %fullScreen;
   @extend %center;
+
+  background-size: cover;
+  background-image: url($bg-img-url4);
+
 }

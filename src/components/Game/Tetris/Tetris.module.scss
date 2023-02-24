@@ -6,11 +6,11 @@
     position: relative;
 
     height: 700px;
-    width: 600px;
+    width: 800px;
 
     @extend %center;
 
-    background-color: red;
+    @extend %glassEffect;
 
     .endGame{
 
