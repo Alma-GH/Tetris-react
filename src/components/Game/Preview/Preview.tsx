@@ -2,7 +2,7 @@ import React, {FC, useMemo} from 'react';
 import {FigureType} from "../../../types/enums";
 import cls from "./Preview.module.scss"
 import {Field} from "../../../types/tetris";
-import {colorMap, previewMap} from "../../../tools/const";
+import {colorCellMap, previewMap} from "../../../tools/const";
 import Cell from "../Cell/Cell";
 
 
@@ -20,7 +20,7 @@ const Preview: FC<PreviewProps> = ({figure}) => {
         <div className={cls.Preview}>
             {previewField.map((row, iR)=>(
                 row.map((val, iC)=>
-                    <Cell key={`${iR}_${iC}`} color={colorMap[val]}/>
+                    <Cell key={`${iR}_${iC}`} color={colorCellMap[val]}/>
                 )
             ))}
         </div>

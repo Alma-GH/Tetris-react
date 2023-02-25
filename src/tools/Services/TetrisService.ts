@@ -1,8 +1,9 @@
-import {Field, IScoreMap, ITetris, Point} from "../../types/tetris";
+import {IScoreMap, ITetris, Point} from "../../types/tetris";
 import {FigureType} from "../../types/enums";
 import Figure from "./Figure";
 import {randomEnum} from "../utils";
-import {SIZE_W_FIELD} from "../const";
+import FieldService from "./FieldService";
+import {valueCellMap} from "../const";
 
 class TetrisService {
 
@@ -10,6 +11,8 @@ class TetrisService {
     curFigure: Figure | null = null
     tick: number = 1000
     timer: number | undefined = undefined
+
+    variableDifficulty: boolean = false
 
     static readonly scoreMap: IScoreMap = {
         1: 100,
@@ -21,22 +24,17 @@ class TetrisService {
     private static randomFigureType(): FigureType{
         return randomEnum(FigureType)
     }
-    private static setValByPoints(val: number, points: Point[], field: Field): void {
-        for(let i = 0; i < points.length; i++) {
-            const point = points[i]
-            field[point.y][point.x] = val
-        }
-    }
 
     //tick
     private checkSpawn(): boolean{
         if(this.tetris == null)
             return false
 
+        const tetris = this.tetris
         let isOk = true
 
         this.curFigure?.points.forEach(point=>{
-            if(!this.isPointNotOccupied(point)){
+            if(!FieldService.isPointNotOccupied(tetris.field, point)){
                 isOk = false
             }
         })
@@ -90,24 +88,31 @@ class TetrisService {
         return this.tetris
     }
 
+
+
+    setDifficultyByScore(): void{
+        if(this.tetris == null)
+            return
+
+        // const scoresDev = [3000, 1000, 350, 100]
+        const scores = [30000, 10000, 3500, 1000]
+        const ticks = [350, 500, 650, 800]
+
+        for(let i = 0; i < 4; i++) {
+            if(this.tetris.score > scores[i]){
+                this.tick = ticks[i]
+                break
+            }
+        }
+    }
     clearFullLines(): void{
         if(this.tetris == null || !this.tetris.inProgress)
             return
 
-        //TODO: optimize (numLines)
-        let numLines = 0
-        for(let i = this.tetris.field.length - 1; i >= 0; i--) {
-            const line = this.tetris.field[i]
-            const isFull = line.every(cell=>cell!=0)
-
-            if(isFull){
-                numLines += 1
-                this.tetris.field.splice(i, 1)
-                this.tetris.field.unshift(new Array(SIZE_W_FIELD).fill(0))
-                i++
-            }
-        }
+        let numLines = FieldService.shiftFullRows(this.tetris.field)
         this.countScore(numLines)
+        if(this.variableDifficulty)
+            this.setDifficultyByScore()
     }
     countScore(lines: number): void{
         if(this.tetris == null)
@@ -117,12 +122,14 @@ class TetrisService {
             this.tetris.score += TetrisService.scoreMap[lines]
     }
 
-    startGame(): void{
+    startGame(variableDifficulty: boolean): void{
         if(this.tetris == null)
             return
 
         this.stopGame()
 
+        this.variableDifficulty = variableDifficulty
+        this.tick = 1000
         this.tetris.inProgress = true
         this.tetris.nextFigure = TetrisService.randomFigureType()
 
@@ -135,30 +142,6 @@ class TetrisService {
     }
 
     //control figure
-    private isPointOnField(point: Point): boolean{
-        if(this.tetris == null)
-            return false
-
-        const x = point.x
-        const y = point.y
-
-        return !(
-            y < 0 ||
-            x < 0 ||
-            y >= this.tetris.field.length ||
-            x >= this.tetris.field[0].length
-        );
-    }
-    private isPointNotOccupied(point: Point): boolean{
-        if(this.tetris == null)
-            return false
-
-        const x = point.x
-        const y = point.y
-
-        return y<0 || this.tetris.field[y][x] == 0 || this.tetris.field[y][x] == 2
-    }
-
     private changeFigure(): void {
         if(this.tetris == null)
             return
@@ -172,15 +155,17 @@ class TetrisService {
 
         const field = this.tetris.field
         const points = this.curFigure.points
-        const pointsOnField = points.filter(point=>this.isPointOnField(point))
+        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
 
         const potentialFigure = new Figure(this.curFigure)
         while(potentialFigure.nextStep()){}
         const potentialPoints: Point[] = potentialFigure.points
 
-        const potentialPointsOnField = potentialPoints.filter(point=>this.isPointOnField(point))
-        TetrisService.setValByPoints(2, potentialPointsOnField, field)
-        TetrisService.setValByPoints(1, pointsOnField, field)
+        const potentialPointsOnField = potentialPoints.filter(point=>FieldService.isPointOnField(field,point))
+
+
+        FieldService.setValByPoints(field, valueCellMap.POT, potentialPointsOnField)
+        FieldService.setValByPoints(field, valueCellMap.Y, pointsOnField)
     }
     private unmountFigure(): void {
         if(this.tetris == null || this.curFigure == null)
@@ -188,16 +173,10 @@ class TetrisService {
 
         const field = this.tetris.field
         const points = this.curFigure.points
-        const pointsOnField = points.filter(point=>this.isPointOnField(point))
-        TetrisService.setValByPoints(0, pointsOnField, field)
+        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
+        FieldService.setValByPoints(field, valueCellMap.DEF, pointsOnField)
 
-        //clear all potential points
-        field.forEach(row=>{
-            row.forEach((v, ind)=>{
-                if(row[ind] == 2)
-                    row[ind] = 0
-            })
-        })
+        FieldService.clearAllPotentialCell(field)
     }
 
     controlFigure(control: Function): unknown {

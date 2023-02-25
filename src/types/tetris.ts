@@ -5,7 +5,8 @@ export type Point = {
     x: number
     y: number
 }
-export type Field = number[][]
+export type Cell = 0 | -1 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type Field = Cell[][]
 export interface ITetris{
     score: number
     nextFigure: FigureType

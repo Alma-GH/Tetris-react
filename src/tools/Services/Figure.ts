@@ -1,6 +1,6 @@
 import {ITetris, Point, Rotate} from "../../types/tetris";
 import {FigureType} from "../../types/enums";
-import {SIZE_H_FIELD, SIZE_W_FIELD} from "../const";
+import FieldService from "./FieldService";
 
 const SIZE_START_AREA = 4
 const pO = [
@@ -261,13 +261,14 @@ class Figure{
 
         const x = point.x
         const y = point.y
+        const field = this.tetris.field
 
         return !(
             // y < 0 ||
             x < 0 ||
-            y >= this.tetris.field.length ||
-            x >= this.tetris.field[0].length ||
-            (y >= 0 && this.tetris.field[y][x] != 0)
+            y >= field.length ||
+            x >= field[0].length ||
+            (y >= 0 && !FieldService.isFreeCell(field[y][x]))
         );
     }
 
@@ -341,26 +342,21 @@ class Figure{
 
     nextStep(): boolean{
 
-        const field = this.tetris.field
         const ps = this.points
 
         for(let i = 0; i < ps.length; i++) {
             const point = ps[i]
             const nextInd = point.y+1
+            const nextPoint: Point = {
+                x: point.x,
+                y: nextInd
+            }
 
-            const end = nextInd >= SIZE_H_FIELD
-            if(end)
+            if(!this.isPointPossible(nextPoint))
                 return false
-
-            const occupied = nextInd>=0 && field[nextInd][point.x] != 0
-            if(occupied)
-                return false
-
         }
 
         ps.forEach(point=>{
-            //love you
-            //me too
             point.y += 1
         })
         this.mainPoint.y += 1
@@ -369,21 +365,19 @@ class Figure{
     }
 
     left(): boolean{
-        const field = this.tetris.field
+
         const ps = this.points
 
         for(let i = 0; i < ps.length; i++) {
             const point = ps[i]
             const nextInd = point.x-1
+            const nextPoint: Point = {
+                x: nextInd,
+                y: point.y
+            }
 
-            const end = nextInd < 0
-            if(end)
+            if(!this.isPointPossible(nextPoint))
                 return false
-
-            const occupied = point.y>=0 && field[point.y][nextInd] != 0
-            if(occupied)
-                return false
-
         }
 
         ps.forEach(point=>{
@@ -394,21 +388,19 @@ class Figure{
         return true
     }
     right(): boolean{
-        const field = this.tetris.field
+
         const ps = this.points
 
         for(let i = 0; i < ps.length; i++) {
             const point = ps[i]
             const nextInd = point.x+1
+            const nextPoint: Point = {
+                x: nextInd,
+                y: point.y
+            }
 
-            const end = nextInd >= SIZE_W_FIELD
-            if(end)
+            if(!this.isPointPossible(nextPoint))
                 return false
-
-            const occupied = point.y>=0 && field[point.y][nextInd] != 0
-            if(occupied)
-                return false
-
         }
 
         ps.forEach(point=>{
