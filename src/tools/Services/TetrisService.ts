@@ -25,7 +25,14 @@ class TetrisService {
         return randomEnum(FigureType)
     }
 
-    //tick
+
+    //check
+    private getCheckedTetris(): ITetris | never {
+        if(this.tetris == null)
+            throw new Error("NULL TETRIS")
+        else
+            return this.tetris
+    }
     private checkSpawn(): boolean{
         if(this.tetris == null)
             return false
@@ -41,12 +48,29 @@ class TetrisService {
 
         return isOk;
     }
-    private startTicks(): void {
+    private checkEmptyZone(): boolean {
+
+        const tetris = this.getCheckedTetris()
+        const field = tetris.field
+
+        return !FieldService.emptyZoneNotEmpty(field)
+
+    }
+
+    //tick
+    private startTicks(newFigure: boolean = true): void {
         this.stopTicks()
 
-        this.firstTick()
+        if(newFigure)
+            this.firstTick()
+
         this.timer = setInterval(()=>{
             if(!this.nextTick()){
+
+                if(!this.checkEmptyZone()){
+                    this.stopGame()
+                }
+
                 this.clearFullLines()
                 this.firstTick()
             }
@@ -56,22 +80,12 @@ class TetrisService {
     private stopTicks(): void {
         clearInterval(this.timer)
     }
-    private firstTick(): boolean{
-        if(this.tetris == null)
-            return false
-
+    private firstTick(): void{
+        if(!this.tetris?.inProgress)
+            return
         console.log("START TICK")
-
         this.changeFigure()
-
-        if(!this.checkSpawn()){
-            this.stopGame()
-            return false
-        }
-
         this.mountFigure()
-
-        return true
     }
     private nextTick(): boolean{
         console.log("NEXT TICK")
@@ -88,7 +102,39 @@ class TetrisService {
         return this.tetris
     }
 
+    startGame(variableDifficulty: boolean): void{
+        if(this.tetris == null)
+            return
 
+        this.stopGame()
+
+        this.variableDifficulty = variableDifficulty
+        this.tick = 1000
+        this.tetris.onPause = false
+        this.tetris.inProgress = true
+        this.tetris.nextFigure = TetrisService.randomFigureType()
+
+        this.startTicks()
+    }
+    stopGame(): void{
+        this.stopTicks()
+        if(this.tetris)
+            this.tetris.inProgress = false
+    }
+    pause(): void {
+        if(this.tetris == null)
+            return
+
+        this.stopTicks()
+        this.tetris.onPause = true
+    }
+    unpause(): void {
+        if(this.tetris == null)
+            return
+
+        this.startTicks(false)
+        this.tetris.onPause = false
+    }
 
     setDifficultyByScore(): void{
         if(this.tetris == null)
@@ -122,24 +168,6 @@ class TetrisService {
             this.tetris.score += TetrisService.scoreMap[lines]
     }
 
-    startGame(variableDifficulty: boolean): void{
-        if(this.tetris == null)
-            return
-
-        this.stopGame()
-
-        this.variableDifficulty = variableDifficulty
-        this.tick = 1000
-        this.tetris.inProgress = true
-        this.tetris.nextFigure = TetrisService.randomFigureType()
-
-        this.startTicks()
-    }
-    stopGame(): void{
-        this.stopTicks()
-        if(this.tetris)
-            this.tetris.inProgress = false
-    }
 
     //control figure
     private changeFigure(): void {
@@ -165,7 +193,7 @@ class TetrisService {
 
 
         FieldService.setValByPoints(field, valueCellMap.POT, potentialPointsOnField)
-        FieldService.setValByPoints(field, valueCellMap.Y, pointsOnField)
+        FieldService.setValByPoints(field, valueCellMap.OCCUPIED, pointsOnField)
     }
     private unmountFigure(): void {
         if(this.tetris == null || this.curFigure == null)
@@ -174,13 +202,17 @@ class TetrisService {
         const field = this.tetris.field
         const points = this.curFigure.points
         const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
-        FieldService.setValByPoints(field, valueCellMap.DEF, pointsOnField)
+        const pointsDEF = pointsOnField.filter(point=>point.y >= FieldService.heightEmpty())
+        const pointsEMT = pointsOnField.filter(point=>point.y < FieldService.heightEmpty())
+
+        FieldService.setValByPoints(field, valueCellMap.DEF, pointsDEF)
+        FieldService.setValByPoints(field, valueCellMap.EMT, pointsEMT)
 
         FieldService.clearAllPotentialCell(field)
     }
 
     controlFigure(control: Function): unknown {
-        if(!this.tetris?.inProgress)
+        if(!this.tetris?.inProgress || this.tetris.onPause)
             return null
 
         this.unmountFigure()
@@ -195,13 +227,17 @@ class TetrisService {
         })
     }
     dropFigure(): void {
-        if(!this.tetris?.inProgress)
+        if(!this.tetris?.inProgress || this.tetris.onPause)
             return
 
         this.stopTicks()
-        let mayFall = this.fallFigure()
-        while(mayFall)
-            mayFall = this.fallFigure()
+
+        while(this.fallFigure()){}
+
+        if(!this.checkEmptyZone()){
+            this.stopGame()
+        }
+
         this.clearFullLines()
         this.startTicks()
     }

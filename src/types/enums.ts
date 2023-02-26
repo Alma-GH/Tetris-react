@@ -11,8 +11,14 @@ export enum FigureType{
 }
 
 export enum CellColor{
-    DEF = "black",
-    POT = "grey",
+    DEF = "grey",
+    EMT = "black",
+    // EMT = "empty",
+    // POT = "purple",
+
+    // BOMB = "red",
+    // FIRE = "orange",
+    // CHANGER = "green",
 
     Y = "yellow",
     C = "cyan",

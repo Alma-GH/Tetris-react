@@ -2,9 +2,11 @@ import {CellColor, FigureType} from "./enums";
 import {Cell, Field} from "./tetris";
 
 
-export interface IValueCellMap {
-    [key: string]: Cell
-}
+export type CellNames =
+    "DEF" | "POT" | "EMT" |
+    "OCCUPIED" |
+    "BOMB" | "FIRE" | "CHANGER"
+
 export type IColorCellMap = {
     [key in Cell]: CellColor
 }

@@ -1,74 +1,82 @@
 import {CellColor, FigureType} from "../types/enums";
-import {Cell, Field, ITetris} from "../types/tetris";
-import {IClassCellMap, IColorCellMap, IPreviewMap, IValueCellMap} from "../types/types";
+import {Cell, Field, ITetris, ReadonlyRow, ReadonlyField} from "../types/tetris";
+import {CellNames, IClassCellMap, IColorCellMap, IPreviewMap} from "../types/types";
 import cellCls from "../components/Game/Cell/Cell.module.scss";
 
 
 //Game
-export const DEF_EMPTY_FIELD: Readonly<Readonly<Cell[]>[]> = [
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
 
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
+export const DEF_EMPTY_START_FIELD: ReadonlyField = [
+  [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2] as ReadonlyRow,
+  [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2] as ReadonlyRow,
+  [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2] as ReadonlyRow,
+  [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2] as ReadonlyRow,
+  [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2] as ReadonlyRow,
 ]
 
-export const SIZE_H_FIELD = DEF_EMPTY_FIELD.length
-export const SIZE_W_FIELD = DEF_EMPTY_FIELD[0].length
+export const DEF_EMPTY_FIELD: ReadonlyField = [
+
+    ...DEF_EMPTY_START_FIELD,
+
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+]
 
 export const DEF_TETRIS: ITetris = {
   score: 0,
   nextFigure: FigureType.I,
   field: DEF_EMPTY_FIELD as Field,
-  inProgress: false
+  inProgress: false,
+  onPause: false
 }
 
 
 
 //Other
-export const valueCellMap: IValueCellMap = {
+export const valueCellMap: Record<CellNames, Cell> = {
   DEF: 0,
   POT: -1,
+  EMT: -2,
 
-  Y: 1,
-  C: 2,
-  R: 3,
-  B: 4,
-  O: 5,
-  P: 6,
-  G: 7
+  OCCUPIED: 1,
+
+  BOMB: 2,
+  FIRE: 3,
+  CHANGER: 4
 }
 export const colorCellMap: IColorCellMap = {
   0: CellColor.DEF,
-  [-1]: CellColor.POT,
+  [-1]: CellColor.P,
+  [-2]: CellColor.EMT,
 
   1: CellColor.Y,
-  2: CellColor.C,
-  3: CellColor.R,
-  4: CellColor.B,
-  5: CellColor.O,
-  6: CellColor.P,
-  7: CellColor.G,
+
+  2: CellColor.R,
+  3: CellColor.O,
+  4: CellColor.G,
 }
 export const classCellMap: IClassCellMap = {
   [CellColor.DEF]: null,
-  [CellColor.POT]: cellCls.purple,
+  [CellColor.EMT]: cellCls.empty,
 
   [CellColor.Y]: cellCls.yellow,
   [CellColor.B]: cellCls.blue,

@@ -23,7 +23,7 @@ export const useTetrisControls = (): void =>{
                     TetrisService.rotateFigure()
                     break;
                 case "ArrowDown":
-                    press = true
+                    // press = true
                     TetrisService.fallFigure()
                     break;
                 case "Space":

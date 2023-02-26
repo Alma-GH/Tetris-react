@@ -8,15 +8,18 @@ import cls from "./Controls.module.scss"
 const Controls = () => {
 
     const context = useStateContext()
+    const tetris = context.state.tetris
     const setState = context.setState
 
     const timer = useRef<number>()
-    const btnRef = useRef<HTMLButtonElement>(null)
+    const btnRefNewGame = useRef<HTMLButtonElement>(null)
+    const btnRefPause = useRef<HTMLButtonElement>(null)
+
 
     const [isChangeDifficult, setIsChangeDifficult] = useState<boolean>(false)
 
     const startGame: MouseEventHandler<HTMLButtonElement> = () => {
-
+        clearInterval(timer.current)
         const newState = {
             tetris: structuredClone(DEF_TETRIS)
         }
@@ -38,31 +41,42 @@ const Controls = () => {
                 setState({tetris})
             else
                 console.log("NULL TETRIS")
+
+            if(!tetris?.inProgress)
+                clearInterval(timer.current)
         }
 
         TetrisService.setTetris(newState.tetris)
         TetrisService.startGame(isChangeDifficult)
         timer.current = setInterval(updateGame, updateTime)
-        btnRef.current?.blur()
+        btnRefNewGame.current?.blur()
     }
-    const stopGame: MouseEventHandler<HTMLButtonElement> = () => {
-        // clearInterval(timer.current);
-        TetrisService.stopGame()
-        console.log("STOP GAME")
+    const togglePause: MouseEventHandler<HTMLButtonElement> = () => {
+        if(!tetris.inProgress)
+            return
+
+        if(!tetris.onPause)
+            TetrisService.pause()
+        else
+            TetrisService.unpause()
+
+        btnRefPause.current?.blur()
     }
     const toggleDifficult: ChangeEventHandler<HTMLInputElement> = (e) => {
         const val = e.target.checked
         setIsChangeDifficult(val)
     }
 
-
     return (
         <div className={cls.Controls}>
-            <Button variant={"contained"}  ref={btnRef}  onClick={startGame} >
-                START
+            <Button variant={"contained"}  ref={btnRefNewGame}  onClick={startGame} >
+                NEW GAME
             </Button>
-            <Button variant={"contained"} onClick={stopGame}>
-                STOP
+            <Button variant={"contained"} ref={btnRefPause} onClick={togglePause}>
+                {!tetris.onPause
+                    ? "PAUSE"
+                    : "PLAY"
+                }
             </Button>
 
             <FormControlLabel

@@ -5,7 +5,7 @@ export type Point = {
     x: number
     y: number
 }
-export type Cell = 0 | -1 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type Cell = 0 | -1 | -2 | 1 | 2 | 3 | 4
 export type Field = Cell[][]
 export interface ITetris{
     score: number
@@ -13,9 +13,15 @@ export interface ITetris{
     field: Field
 
     inProgress: boolean
+    onPause: boolean
 }
 
 
 export interface IScoreMap {
     [key: number]: number
 }
+
+
+
+export type ReadonlyRow = Readonly<Cell[]>
+export type ReadonlyField = Readonly<ReadonlyRow[]>

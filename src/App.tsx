@@ -11,7 +11,6 @@ function App() {
         tetris: structuredClone(DEF_TETRIS)
     })
 
-
   return (
       <StateContext.Provider value={{state, setState}}>
           <div className="App">
@@ -28,11 +27,11 @@ export default App
 
 /*
     TODO:
-        1)change tick (true/false)
+        1)
         2)
-        3)pause
+        3)feature: bonuses
+            1)bomb
+            2)fire
+            3)change figure
         4)styles
-        5)spawn out field -> change condition for game over
-        6)
-        7)feature: bonuses
  */

@@ -10,6 +10,10 @@
     background-color: $cell-col-grey;
     border-color: $cell-col-grey;
 
+    &.empty{
+        background-color: black;
+        //border-color: #3a3a3a;
+    }
     &.yellow{
         background-color: $cell-col-yellow;
         border-color: $cell-col-yellow;

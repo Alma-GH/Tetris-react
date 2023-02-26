@@ -8,7 +8,8 @@ export const StateContext = createContext<IStateContext>({
             score: 0,
             nextFigure: FigureType.I,
             field: [],
-            inProgress: false
+            inProgress: false,
+            onPause: false
         }
     },
     setState: ()=>{}

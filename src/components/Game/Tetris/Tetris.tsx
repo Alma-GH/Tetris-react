@@ -23,9 +23,15 @@ const Tetris: FC = () => {
             <Field field={game.field}/>
             <Controls/>
 
+            {/*TODO: comp */}
             {!game.inProgress &&
                 <div className={cls.endGame}>
                     GAME OVER
+                </div>
+            }
+            {game.onPause &&
+                <div className={cls.endGame}>
+                  PAUSE
                 </div>
             }
         </div>
