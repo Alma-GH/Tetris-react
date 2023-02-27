@@ -1,0 +1,13 @@
+@import "src/style/var";
+
+.BonusStack{
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  height: $cell-size * 3;
+  width: $cell-size;
+
+  @extend %column;
+}

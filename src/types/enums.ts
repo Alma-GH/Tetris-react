@@ -10,15 +10,15 @@ export enum FigureType{
     I = "I"
 }
 
+export enum Bonus{
+    BOMB = "BOMB",
+    FIRE = "FIRE",
+    CHANGER = "CHANGER"
+}
+
 export enum CellColor{
     DEF = "grey",
     EMT = "black",
-    // EMT = "empty",
-    // POT = "purple",
-
-    // BOMB = "red",
-    // FIRE = "orange",
-    // CHANGER = "green",
 
     Y = "yellow",
     C = "cyan",

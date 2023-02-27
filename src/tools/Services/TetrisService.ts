@@ -1,9 +1,10 @@
 import {IScoreMap, ITetris, Point} from "../../types/tetris";
 import {FigureType} from "../../types/enums";
 import Figure from "./Figure";
-import {randomEnum} from "../utils";
 import FieldService from "./FieldService";
 import {valueCellMap} from "../const";
+import BonusService from "./BonusService";
+import {randomEnum} from "../utils";
 
 class TetrisService {
 
@@ -136,7 +137,7 @@ class TetrisService {
         this.tetris.onPause = false
     }
 
-    setDifficultyByScore(): void{
+    private setDifficultyByScore(): void{
         if(this.tetris == null)
             return
 
@@ -151,7 +152,7 @@ class TetrisService {
             }
         }
     }
-    clearFullLines(): void{
+    private clearFullLines(): void{
         if(this.tetris == null || !this.tetris.inProgress)
             return
 
@@ -160,12 +161,32 @@ class TetrisService {
         if(this.variableDifficulty)
             this.setDifficultyByScore()
     }
-    countScore(lines: number): void{
+    private countScore(lines: number): void{
         if(this.tetris == null)
             return
 
+        const div = ()=>Math.floor((this.tetris?.score || 0) / 1500)
+
+        const divBefore = div()
         if([1,2,3,4].includes(lines))
             this.tetris.score += TetrisService.scoreMap[lines]
+        const divAfter = div()
+
+        const getBonus = divBefore < divAfter
+        if(getBonus){
+            this.setRandomBonus()
+        }
+
+    }
+
+    //bonus
+    setRandomBonus(): void{
+        if(this.tetris == null)
+            return
+
+        if(!FieldService.setRandomBonus(this.tetris.field)){
+            BonusService.pushRandom(this.tetris.bonusStack)
+        }
     }
 
 

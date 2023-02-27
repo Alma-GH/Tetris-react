@@ -1,11 +1,11 @@
-import {CellColor, FigureType} from "./enums";
+import {Bonus, CellColor, FigureType} from "./enums";
 import {Cell, Field} from "./tetris";
 
 
 export type CellNames =
     "DEF" | "POT" | "EMT" |
     "OCCUPIED" |
-    "BOMB" | "FIRE" | "CHANGER"
+    Bonus
 
 export type IColorCellMap = {
     [key in Cell]: CellColor

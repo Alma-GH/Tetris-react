@@ -27,11 +27,10 @@ export default App
 
 /*
     TODO:
-        1)
-        2)
-        3)feature: bonuses
+        1)feature: bonuses
             1)bomb
             2)fire
             3)change figure
-        4)styles
+        2)change controls
+        3)styles
  */

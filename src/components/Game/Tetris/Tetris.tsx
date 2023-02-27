@@ -7,6 +7,7 @@ import Preview from "../Preview/Preview";
 import {useTetrisControls} from "../../../hooks/useTetrisControls";
 import {useStoreScoreRecord} from "../../../hooks/useStoreScoreRecord";
 import Controls from "../Controls/Controls";
+import BonusStack from "../BonusStack/BonusStack";
 
 const Tetris: FC = () => {
 
@@ -22,6 +23,7 @@ const Tetris: FC = () => {
             <Preview figure={game.nextFigure}/>
             <Field field={game.field}/>
             <Controls/>
+            <BonusStack bonuses={game.bonusStack}/>
 
             {/*TODO: comp */}
             {!game.inProgress &&

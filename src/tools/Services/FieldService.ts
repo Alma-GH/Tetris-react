@@ -1,5 +1,8 @@
 import {Cell, Field, Point} from "../../types/tetris";
 import {DEF_EMPTY_FIELD, DEF_EMPTY_START_FIELD, valueCellMap} from "../const";
+import {Bonus} from "../../types/enums";
+import {getRandomIntInclusive, randomBool} from "../utils";
+import BonusService from "./BonusService";
 
 class FieldService{
 
@@ -21,6 +24,9 @@ class FieldService{
             cell == valueCellMap.POT ||
             cell == valueCellMap.EMT
         )
+    }
+    isFreeRow(row: Cell[]): boolean{
+        return row.every(cell=>this.isFreeCell(cell))
     }
 
     clearField(field: Field): void {
@@ -128,6 +134,57 @@ class FieldService{
 
         return false
     }
+
+
+    setRandomBonus(field: Field): boolean {
+
+        const newBonus = BonusService.getRandomBonus()
+
+        let emptyField = true
+        const hEmpty = this.heightEmpty()
+        for(let i = hEmpty; i < field.length; i++) {
+            const row = field[i]
+            const emptyOrOnlyBonusRow = !row.includes(valueCellMap.OCCUPIED)
+
+            if(emptyOrOnlyBonusRow)
+                continue
+            emptyField = false
+
+            const takeThisRow = randomBool()
+            const isLast = (i == field.length - 1)
+            if(!takeThisRow && !isLast)
+                continue
+
+            const pointWithBonus: Point = this.getRandomOccupiedPointByRow(field, i)
+            this.setBonusByPoint(field, newBonus, pointWithBonus)
+
+            break
+        }
+
+        return !emptyField
+
+    }
+    setBonusByPoint(field: Field, bonus: Bonus, point: Point){
+        this.setValByPoints(field, valueCellMap[bonus], [point])
+    }
+    getRandomOccupiedPointByRow(field: Field, rowInd: number): Point {
+        const row = field[rowInd]
+
+        const indexes = []
+        for(let j = 0; j < row.length; j++) {
+            const cell = row[j]
+            if(cell == valueCellMap.OCCUPIED)
+                indexes.push(j)
+        }
+        const randInd = getRandomIntInclusive(0, indexes.length-1)
+        const chooseCell = indexes[randInd]
+
+        return {
+            x: chooseCell,
+            y: rowInd
+        }
+    }
+
 
 
 }

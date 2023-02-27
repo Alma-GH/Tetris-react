@@ -1,4 +1,4 @@
-import {FigureType} from "./enums";
+import {Bonus, FigureType} from "./enums";
 
 export type Rotate = 1 | 2 | 3 | 4
 export type Point = {
@@ -11,6 +11,8 @@ export interface ITetris{
     score: number
     nextFigure: FigureType
     field: Field
+
+    bonusStack: Bonus[],
 
     inProgress: boolean
     onPause: boolean
