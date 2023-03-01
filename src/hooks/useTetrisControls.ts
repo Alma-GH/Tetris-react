@@ -30,6 +30,9 @@ export const useTetrisControls = (): void =>{
                     press = true
                     TetrisService.dropFigure()
                     break;
+                case "ControlLeft":
+                    press = true
+                    TetrisService.useBonus()
             }
         }
         const controlOff = (e: KeyboardEvent)=>{

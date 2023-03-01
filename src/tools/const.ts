@@ -1,6 +1,6 @@
-import {CellColor, FigureType} from "../types/enums";
-import {Cell, Field, ITetris, ReadonlyRow, ReadonlyField} from "../types/tetris";
-import {CellNames, IClassCellMap, IColorCellMap, IPreviewMap} from "../types/types";
+import {Bonus, CellColor, FigureType} from "../types/enums";
+import {Cell, Field, ITetris, ReadonlyField, ReadonlyRow} from "../types/tetris";
+import {BonusCell, CellNames, IClassCellMap, IColorCellMap, IPreviewMap} from "../types/types";
 import cellCls from "../components/Game/Cell/Cell.module.scss";
 
 
@@ -53,7 +53,12 @@ export const DEF_TETRIS: ITetris = {
 
 
 
-//Other
+//Maps
+export const bonusCellMap : Record<BonusCell, Bonus> = {
+    2: Bonus.BOMB,
+    3: Bonus.FIRE,
+    4: Bonus.CHANGER
+}
 export const valueCellMap: Record<CellNames, Cell> = {
   DEF: 0,
   POT: -1,

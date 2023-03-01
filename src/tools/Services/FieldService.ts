@@ -1,5 +1,5 @@
 import {Cell, Field, Point} from "../../types/tetris";
-import {DEF_EMPTY_FIELD, DEF_EMPTY_START_FIELD, valueCellMap} from "../const";
+import {bonusCellMap, DEF_EMPTY_FIELD, DEF_EMPTY_START_FIELD, valueCellMap} from "../const";
 import {Bonus} from "../../types/enums";
 import {getRandomIntInclusive, randomBool} from "../utils";
 import BonusService from "./BonusService";
@@ -27,6 +27,13 @@ class FieldService{
     }
     isFreeRow(row: Cell[]): boolean{
         return row.every(cell=>this.isFreeCell(cell))
+    }
+    isBonusCell(cell: Cell): boolean{
+        return (
+            cell == valueCellMap.BOMB ||
+            cell == valueCellMap.FIRE ||
+            cell == valueCellMap.CHANGER
+        )
     }
 
     clearField(field: Field): void {
@@ -77,7 +84,7 @@ class FieldService{
         field.unshift(new Array(this.SIZE_W_FIELD).fill(valueCellMap.DEF))
         field.unshift(...emptyField)
     }
-    shiftFullRows(field: Field): number {
+    shiftFullRows(field: Field, stack?: Bonus[]): number {
 
         //TODO: optimize (numLines)
         let numRows = 0
@@ -89,6 +96,8 @@ class FieldService{
             if(isFull){
                 numRows += 1
                 this.shiftRow(field, i)
+                if(stack)
+                    BonusService.push(stack, this.getBonusFromRow(row))
                 i++
             }
         }
@@ -183,6 +192,10 @@ class FieldService{
             x: chooseCell,
             y: rowInd
         }
+    }
+    getBonusFromRow(row: Cell[]): Bonus | null {
+        const cellWithBonus = row.find(cell=>this.isBonusCell(cell))
+        return BonusService.getBonusByCell(cellWithBonus)
     }
 
 

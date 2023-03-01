@@ -1,5 +1,5 @@
 import {IScoreMap, ITetris, Point} from "../../types/tetris";
-import {FigureType} from "../../types/enums";
+import {Bonus, FigureType} from "../../types/enums";
 import Figure from "./Figure";
 import FieldService from "./FieldService";
 import {valueCellMap} from "../const";
@@ -14,6 +14,8 @@ class TetrisService {
     timer: number | undefined = undefined
 
     variableDifficulty: boolean = false
+
+    bonus: Bonus | null = null
 
     static readonly scoreMap: IScoreMap = {
         1: 100,
@@ -84,12 +86,11 @@ class TetrisService {
     private firstTick(): void{
         if(!this.tetris?.inProgress)
             return
-        console.log("START TICK")
+
         this.changeFigure()
         this.mountFigure()
     }
     private nextTick(): boolean{
-        console.log("NEXT TICK")
         const mayFall = this.fallFigure()
         return mayFall;
     }
@@ -156,7 +157,7 @@ class TetrisService {
         if(this.tetris == null || !this.tetris.inProgress)
             return
 
-        let numLines = FieldService.shiftFullRows(this.tetris.field)
+        let numLines = FieldService.shiftFullRows(this.tetris.field, this.tetris.bonusStack)
         this.countScore(numLines)
         if(this.variableDifficulty)
             this.setDifficultyByScore()
@@ -188,6 +189,13 @@ class TetrisService {
             BonusService.pushRandom(this.tetris.bonusStack)
         }
     }
+    useBonus(): void{
+        if(!this.tetris?.inProgress || this.tetris.onPause || this.bonus != null)
+            return
+
+        console.log("USE BONUS")
+        this.bonus = BonusService.pop(this.tetris.bonusStack)
+    }
 
 
     //control figure
@@ -195,8 +203,11 @@ class TetrisService {
         if(this.tetris == null)
             return
 
+        console.log({bonus: this.bonus})
         this.curFigure = new Figure(this.tetris, this.tetris.nextFigure)
         this.tetris.nextFigure = TetrisService.randomFigureType()
+
+        this.bonus = null
     }
     private mountFigure(): void {
         if(this.tetris == null || this.curFigure == null)

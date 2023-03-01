@@ -1,5 +1,7 @@
 import {Bonus} from "../../types/enums";
 import {randomEnum} from "../utils";
+import {Cell} from "../../types/tetris";
+import {bonusCellMap} from "../const";
 
 class BonusService {
 
@@ -8,8 +10,16 @@ class BonusService {
     getRandomBonus(): Bonus {
         return randomEnum(Bonus)
     }
+    getBonusByCell(cell: Cell | null | undefined): Bonus | null{
+        if(cell == 2 || cell == 3 || cell == 4)
+            return bonusCellMap[cell]
+        return null
+    }
 
-    push(stack: Bonus[], bonus: Bonus): void{
+    push(stack: Bonus[], bonus: Bonus | null): void{
+        if(bonus == null)
+            return
+
         if(stack.length == this.MAX_LENGTH_STACK){
             stack.shift()
         }

@@ -7,6 +7,8 @@ export type CellNames =
     "OCCUPIED" |
     Bonus
 
+export type BonusCell = 2 | 3 | 4
+
 export type IColorCellMap = {
     [key in Cell]: CellColor
 }
