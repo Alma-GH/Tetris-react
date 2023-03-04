@@ -1,6 +1,8 @@
 import {ITetris, Point, Rotate} from "../../types/tetris";
 import {FigureType} from "../../types/enums";
 import FieldService from "./FieldService";
+import BonusFigure from "./BonusFigure";
+import {valueCellMap} from "../const";
 
 const SIZE_START_AREA = 4
 const pO = [
@@ -340,6 +342,63 @@ class Figure{
         }
     }
 
+    mount(): void {
+        if(this.tetris == null)
+            return
+
+        const figure = this as unknown as BonusFigure
+        const field = this.tetris.field
+        const points = figure.points
+        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
+
+        const potentialFigure = new Figure(figure)
+        while(potentialFigure.nextStep()){}
+        const potentialPoints: Point[] = potentialFigure.points
+
+        const potentialPointsOnField = potentialPoints.filter(point=>FieldService.isPointOnField(field,point))
+
+        const cellValue = figure.bonus
+            ? valueCellMap[figure.bonus]
+            : valueCellMap.OCCUPIED
+
+        FieldService.setValByPoints(field, valueCellMap.POT, potentialPointsOnField)
+        FieldService.setValByPoints(field, cellValue, pointsOnField)
+    }
+    unmount(): void {
+        if(this.tetris == null)
+            return
+
+        const field = this.tetris.field
+        const points = this.points
+        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
+        const pointsDEF = pointsOnField.filter(point=>point.y >= FieldService.heightEmpty())
+        const pointsEMT = pointsOnField.filter(point=>point.y < FieldService.heightEmpty())
+
+        FieldService.setValByPoints(field, valueCellMap.DEF, pointsDEF)
+        FieldService.setValByPoints(field, valueCellMap.EMT, pointsEMT)
+
+        FieldService.clearAllPotentialCell(field)
+    }
+
+    moveDown(): void{
+        this.points.forEach(point=>{
+            point.y += 1
+        })
+        this.mainPoint.y += 1
+    }
+    moveLeft(): void{
+        this.points.forEach(point=>{
+            point.x -= 1
+        })
+        this.mainPoint.x -= 1
+    }
+    moveRight(): void{
+        this.points.forEach(point=>{
+            point.x += 1
+        })
+        this.mainPoint.x += 1
+    }
+
     nextStep(): boolean{
 
         const ps = this.points
@@ -356,10 +415,7 @@ class Figure{
                 return false
         }
 
-        ps.forEach(point=>{
-            point.y += 1
-        })
-        this.mainPoint.y += 1
+        this.moveDown()
 
         return true
     }
@@ -380,10 +436,7 @@ class Figure{
                 return false
         }
 
-        ps.forEach(point=>{
-            point.x -= 1
-        })
-        this.mainPoint.x -= 1
+        this.moveLeft()
 
         return true
     }
@@ -403,10 +456,7 @@ class Figure{
                 return false
         }
 
-        ps.forEach(point=>{
-            point.x += 1
-        })
-        this.mainPoint.x += 1
+        this.moveRight()
 
         return true
     }

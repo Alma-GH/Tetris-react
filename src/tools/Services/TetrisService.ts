@@ -5,6 +5,7 @@ import FieldService from "./FieldService";
 import {valueCellMap} from "../const";
 import BonusService from "./BonusService";
 import {randomEnum} from "../utils";
+import BonusFigure from "./BonusFigure";
 
 class TetrisService {
 
@@ -88,7 +89,7 @@ class TetrisService {
             return
 
         this.changeFigure()
-        this.mountFigure()
+        this.curFigure?.mount()
     }
     private nextTick(): boolean{
         const mayFall = this.fallFigure()
@@ -195,6 +196,9 @@ class TetrisService {
 
         console.log("USE BONUS")
         this.bonus = BonusService.pop(this.tetris.bonusStack)
+        // this.bonus = Bonus.FIRE // TODO: delete
+        // this.bonus = Bonus.CHANGER // TODO: delete
+        // this.bonus = Bonus.BOMB // TODO: delete
     }
 
 
@@ -204,52 +208,22 @@ class TetrisService {
             return
 
         console.log({bonus: this.bonus})
-        this.curFigure = new Figure(this.tetris, this.tetris.nextFigure)
+        if(this.bonus == null)
+            this.curFigure = new Figure(this.tetris, this.tetris.nextFigure)
+        else
+            this.curFigure = new BonusFigure(this.tetris, this.bonus, this.tetris.nextFigure)
         this.tetris.nextFigure = TetrisService.randomFigureType()
 
         this.bonus = null
-    }
-    private mountFigure(): void {
-        if(this.tetris == null || this.curFigure == null)
-            return
-
-        const field = this.tetris.field
-        const points = this.curFigure.points
-        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
-
-        const potentialFigure = new Figure(this.curFigure)
-        while(potentialFigure.nextStep()){}
-        const potentialPoints: Point[] = potentialFigure.points
-
-        const potentialPointsOnField = potentialPoints.filter(point=>FieldService.isPointOnField(field,point))
-
-
-        FieldService.setValByPoints(field, valueCellMap.POT, potentialPointsOnField)
-        FieldService.setValByPoints(field, valueCellMap.OCCUPIED, pointsOnField)
-    }
-    private unmountFigure(): void {
-        if(this.tetris == null || this.curFigure == null)
-            return
-
-        const field = this.tetris.field
-        const points = this.curFigure.points
-        const pointsOnField = points.filter(point=>FieldService.isPointOnField(field,point))
-        const pointsDEF = pointsOnField.filter(point=>point.y >= FieldService.heightEmpty())
-        const pointsEMT = pointsOnField.filter(point=>point.y < FieldService.heightEmpty())
-
-        FieldService.setValByPoints(field, valueCellMap.DEF, pointsDEF)
-        FieldService.setValByPoints(field, valueCellMap.EMT, pointsEMT)
-
-        FieldService.clearAllPotentialCell(field)
     }
 
     controlFigure(control: Function): unknown {
         if(!this.tetris?.inProgress || this.tetris.onPause)
             return null
 
-        this.unmountFigure()
+        this.curFigure?.unmount()
         const res = control()
-        this.mountFigure()
+        this.curFigure?.mount()
 
         return res
     }
@@ -265,6 +239,7 @@ class TetrisService {
         this.stopTicks()
 
         while(this.fallFigure()){}
+
 
         if(!this.checkEmptyZone()){
             this.stopGame()

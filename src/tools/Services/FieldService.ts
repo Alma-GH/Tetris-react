@@ -1,5 +1,5 @@
 import {Cell, Field, Point} from "../../types/tetris";
-import {bonusCellMap, DEF_EMPTY_FIELD, DEF_EMPTY_START_FIELD, valueCellMap} from "../const";
+import {DEF_EMPTY_FIELD, DEF_EMPTY_START_FIELD, valueCellMap} from "../const";
 import {Bonus} from "../../types/enums";
 import {getRandomIntInclusive, randomBool} from "../utils";
 import BonusService from "./BonusService";
@@ -53,6 +53,22 @@ class FieldService{
         }
 
 
+    }
+    clearArea(field: Field, centerPoint: Point, power: number): void {
+
+        const hEmpty = this.heightEmpty()
+
+        for(let i = 0; i < field.length; i++) {
+            for(let j = 0; j < field[i].length; j++) {
+
+                const clearIt =
+                    (Math.abs(centerPoint.x - j) <= power-1) &&
+                    (Math.abs(centerPoint.y - i) <= power-1)
+
+                if(clearIt)
+                    field[i][j] = i < hEmpty ? valueCellMap.EMT : valueCellMap.DEF
+            }
+        }
     }
     clearAllPotentialCell(field: Field): void {
 

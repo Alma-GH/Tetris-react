@@ -41,6 +41,24 @@ export const DEF_EMPTY_FIELD: ReadonlyField = [
     [0,0,0,0,0,0,0,0,0,0],
 ]
 
+
+
+/*
+    [0,0,0,0,0,0,0,0,0,0].fill(1,1) as ReadonlyRow,
+    [0,0,0,0,0,0,0,0,0,0].fill(1,1) as ReadonlyRow,
+    [0,0,0,0,0,0,0,0,0,0].fill(1,1) as ReadonlyRow,
+ */
+
+/*
+new Array(25).fill(0)
+    .map((val, ind,arr)=>{
+        if(ind<5)
+            return new Array(10).fill(-2)
+        else
+            return new Array(10).fill(-2)
+    })
+ */
+
 export const DEF_TETRIS: ITetris = {
   score: 0,
   nextFigure: FigureType.I,
