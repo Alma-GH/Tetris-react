@@ -20,7 +20,7 @@ const Tetris: FC = () => {
     return (
         <div className={cls.Tetris}>
             <Score score={game.score}/>
-            <Preview figure={game.nextFigure}/>
+            <Preview figure={game.nextFigure} bonus={game.bonus}/>
             <Field field={game.field}/>
             <Controls/>
             <BonusStack bonuses={game.bonusStack}/>

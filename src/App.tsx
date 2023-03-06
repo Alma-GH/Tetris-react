@@ -27,9 +27,7 @@ export default App
 
 /*
     TODO:
-        1)feature: bonuses
-            1)
-            2)preview
+        1)
         2)change controls
         3)styles
         4)audio

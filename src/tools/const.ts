@@ -63,6 +63,7 @@ export const DEF_TETRIS: ITetris = {
   score: 0,
   nextFigure: FigureType.I,
   field: DEF_EMPTY_FIELD as Field,
+  bonus: null,
   bonusStack: [],
   inProgress: false,
   onPause: false

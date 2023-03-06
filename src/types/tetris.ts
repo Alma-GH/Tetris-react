@@ -12,6 +12,7 @@ export interface ITetris{
     nextFigure: FigureType
     field: Field
 
+    bonus: Bonus | null,
     bonusStack: Bonus[],
 
     inProgress: boolean

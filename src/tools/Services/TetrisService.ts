@@ -16,8 +16,6 @@ class TetrisService {
 
     variableDifficulty: boolean = false
 
-    bonus: Bonus | null = null
-
     static readonly scoreMap: IScoreMap = {
         1: 100,
         2: 300,
@@ -191,11 +189,11 @@ class TetrisService {
         }
     }
     useBonus(): void{
-        if(!this.tetris?.inProgress || this.tetris.onPause || this.bonus != null)
+        if(!this.tetris?.inProgress || this.tetris.onPause || this.tetris.bonus != null)
             return
 
         console.log("USE BONUS")
-        this.bonus = BonusService.pop(this.tetris.bonusStack)
+        this.tetris.bonus = BonusService.pop(this.tetris.bonusStack)
     }
 
 
@@ -204,14 +202,14 @@ class TetrisService {
         if(this.tetris == null)
             return
 
-        console.log({bonus: this.bonus})
-        if(this.bonus == null)
+        console.log({bonus: this.tetris.bonus})
+        if(this.tetris.bonus == null)
             this.curFigure = new Figure(this.tetris, this.tetris.nextFigure)
         else
-            this.curFigure = new BonusFigure(this.tetris, this.bonus, this.tetris.nextFigure)
+            this.curFigure = new BonusFigure(this.tetris, this.tetris.bonus, this.tetris.nextFigure)
         this.tetris.nextFigure = TetrisService.randomFigureType()
 
-        this.bonus = null
+        this.tetris.bonus = null
     }
 
     controlFigure(control: Function): unknown {
