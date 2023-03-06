@@ -112,8 +112,10 @@ class FieldService{
             if(isFull){
                 numRows += 1
                 this.shiftRow(field, i)
-                if(stack)
-                    BonusService.push(stack, this.getBonusFromRow(row))
+                if(stack){
+                    const bonuses = this.getBonusesFromRow(row)
+                    bonuses.forEach(bonus=>{BonusService.push(stack, bonus)})
+                }
                 i++
             }
         }
@@ -209,9 +211,17 @@ class FieldService{
             y: rowInd
         }
     }
-    getBonusFromRow(row: Cell[]): Bonus | null {
-        const cellWithBonus = row.find(cell=>this.isBonusCell(cell))
-        return BonusService.getBonusByCell(cellWithBonus)
+    getBonusesFromRow(row: Cell[]): Bonus[]{
+        const cellsWithBonus = row.filter(cell=>this.isBonusCell(cell))
+
+        let res = []
+        for(const cell of cellsWithBonus) {
+            const bonus = BonusService.getBonusByCell(cell)
+            if(bonus)
+                res.push(bonus)
+        }
+
+        return res
     }
 
 

@@ -196,9 +196,6 @@ class TetrisService {
 
         console.log("USE BONUS")
         this.bonus = BonusService.pop(this.tetris.bonusStack)
-        // this.bonus = Bonus.FIRE // TODO: delete
-        // this.bonus = Bonus.CHANGER // TODO: delete
-        // this.bonus = Bonus.BOMB // TODO: delete
     }
 
 

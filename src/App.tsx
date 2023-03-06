@@ -28,9 +28,8 @@ export default App
 /*
     TODO:
         1)feature: bonuses
-            1)bomb
-            2)fire
-            3)change figure
+            1)
+            2)preview
         2)change controls
         3)styles
         4)audio

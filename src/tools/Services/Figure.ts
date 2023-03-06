@@ -314,7 +314,7 @@ class Figure{
         const startX = 3
         this.setPoints(arr, startX, startY)
     }
-    private setStartPointsByType(): void{
+    protected setStartPointsByType(): void{
 
         switch(this.type){
             case FigureType.O:
